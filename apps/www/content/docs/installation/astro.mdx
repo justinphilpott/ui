@@ -115,11 +115,12 @@ import '@/styles/globals.css'
 
 ### Update astro tailwind config
 
-To prevent serving the Tailwind base styles twice, we need to tell Astro not to apply the base styles, since we already include them in our own `globals.css` file. To do this, set the `applyBaseStyles` config option for the tailwind plugin in `astro.config.mjs` to `false`.
+To prevent serving the Tailwind base styles twice, we need to tell Astro not to apply the base styles, since we already include them in our own `globals.css` file. To do this, set the `applyBaseStyles` config option for the tailwind plugin in `astro.config.mjs` to `false`:
 
-```ts {3-5} showLineNumbers
+```ts {4-6} showLineNumbers
 export default defineConfig({
   integrations: [
+    react(),
     tailwind({
       applyBaseStyles: false,
     }),
@@ -135,6 +136,28 @@ When running `npx shadcn-ui@latest init`, your tailwind config for content will 
 module.exports = {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
 }
+```
+
+### Update astro.config.mjs to define an import alias to the src directory.
+
+To allow import aliases such as "@/components/..." to properly resolve, add the following vite alias to astro.config.mjs:
+
+```ts {8-14} showLineNumbers
+export default defineConfig({
+  integrations: [
+    react(), 
+    tailwind({
+      applyBaseStyles: false
+    }),
+  ],
+  vite: {
+    resolve: {
+      alias: {
+        '@': path.resolve('./src'),
+      },
+    },
+  },
+});
 ```
 
 ### That's it
